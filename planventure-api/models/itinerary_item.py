@@ -18,6 +18,12 @@ class ItineraryItem(db.Model):
     latitude = db.Column(db.Float, nullable=True)
     longitude = db.Column(db.Float, nullable=True)
     location = db.Column(db.String(255), nullable=True)
+    breakfast_time = db.Column(db.Time, nullable=True)
+    lunch_time = db.Column(db.Time, nullable=True)
+    dinner_time = db.Column(db.Time, nullable=True)
+    accommodation_name = db.Column(db.String(255), nullable=True)
+    accommodation_address = db.Column(db.Text, nullable=True)
+    activities = db.Column(db.JSON, default=list, nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False)
 
@@ -36,6 +42,12 @@ class ItineraryItem(db.Model):
             'latitude': self.latitude,
             'longitude': self.longitude,
             'location': self.location,
+            'breakfast_time': self.breakfast_time.isoformat() if self.breakfast_time else None,
+            'lunch_time': self.lunch_time.isoformat() if self.lunch_time else None,
+            'dinner_time': self.dinner_time.isoformat() if self.dinner_time else None,
+            'accommodation_name': self.accommodation_name,
+            'accommodation_address': self.accommodation_address,
+            'activities': self.activities,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }

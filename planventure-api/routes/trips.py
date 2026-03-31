@@ -5,10 +5,12 @@ from flask import Blueprint, request, jsonify
 from datetime import datetime
 from database import db
 from models.trip import Trip
+from models.itinerary_item import ItineraryItem
 from models.user import User
 from auth_middleware import protected_route, get_current_user_id
 from schemas import trip_schema, trips_schema, trip_create_schema
 from marshmallow import ValidationError
+from itinerary_utils import generate_default_itinerary_objects
 
 trips_bp = Blueprint('trips', __name__, url_prefix='/api/trips')
 
@@ -43,11 +45,36 @@ def validate_trip_ownership(trip, user_id):
     return trip.user_id == user_id
 
 
+def check_trip_exists(user_id, destination, start_date, end_date):
+    """
+    Check if a trip already exists with the same user, destination, start date, and end date.
+    
+    Args:
+        user_id: Current user ID
+        destination: Trip destination
+        start_date: Trip start date
+        end_date: Trip end date
+        
+    Returns:
+        Existing trip object if found, None otherwise
+    """
+    existing_trip = Trip.query.filter_by(
+        user_id=user_id,
+        destination=destination,
+        start_date=start_date,
+        end_date=end_date
+    ).first()
+    return existing_trip
+
+
 @trips_bp.route('', methods=['POST'])
 @protected_route
 def create_trip():
     """
     Create a new trip for the authenticated user.
+    
+    Checks if a trip with the same user, destination, start date, and end date already exists.
+    If it does, returns the existing trip with a 409 Conflict status.
     
     Request body (JSON):
     {
@@ -56,7 +83,8 @@ def create_trip():
         "end_date": "2026-06-15T00:00:00",
         "latitude": 48.8566,
         "longitude": 2.3522,
-        "description": "Summer vacation in Paris"
+        "description": "Summer vacation in Paris",
+        "itinerary_items": [...]  # Optional
     }
     
     Returns:
@@ -75,6 +103,7 @@ def create_trip():
     - 201: Trip created successfully
     - 400: Invalid input or validation error
     - 401: Unauthorized
+    - 409: Conflict (trip already exists with same user, destination, and dates)
     - 500: Server error
     """
     try:
@@ -119,6 +148,20 @@ def create_trip():
                 'message': error_msg
             }), 400
         
+        # Check if trip already exists
+        existing_trip = check_trip_exists(
+            user_id=user_id,
+            destination=validated_data['destination'],
+            start_date=start_date,
+            end_date=end_date
+        )
+        if existing_trip:
+            return jsonify({
+                'error': 'conflict',
+                'message': 'A trip with the same destination and dates already exists',
+                'data': existing_trip.to_dict()
+            }), 409
+        
         # Create trip object
         trip = Trip(
             user_id=user_id,
@@ -133,10 +176,51 @@ def create_trip():
         # Add to session
         db.session.add(trip)
         
-        # Commit the transaction
+        # Commit the transaction to generate trip ID
         db.session.commit()
         
-        # Refresh the object to ensure all fields are populated (including auto-generated ID)
+        # Refresh the object to ensure ID is populated
+        db.session.refresh(trip)
+        
+        # Generate default itinerary template or use provided items
+        if 'itinerary_items' in validated_data and validated_data['itinerary_items']:
+            # Use provided itinerary items
+            itinerary_items = []
+            for item_data in validated_data['itinerary_items']:
+                item = ItineraryItem(
+                    trip_id=trip.id,
+                    day=item_data.get('day', 1),
+                    title=item_data.get('title', ''),
+                    description=item_data.get('description'),
+                    activity_date=item_data.get('activity_date', start_date),
+                    latitude=item_data.get('latitude'),
+                    longitude=item_data.get('longitude'),
+                    location=item_data.get('location'),
+                    breakfast_time=item_data.get('breakfast_time'),
+                    lunch_time=item_data.get('lunch_time'),
+                    dinner_time=item_data.get('dinner_time'),
+                    accommodation_name=item_data.get('accommodation_name'),
+                    accommodation_address=item_data.get('accommodation_address'),
+                    activities=item_data.get('activities', [])
+                )
+                itinerary_items.append(item)
+        else:
+            # Generate default itinerary template
+            itinerary_items = generate_default_itinerary_objects(
+                trip_id=trip.id,
+                start_date=start_date,
+                end_date=end_date,
+                destination=validated_data['destination']
+            )
+        
+        # Add itinerary items to session
+        for item in itinerary_items:
+            db.session.add(item)
+        
+        # Commit the itinerary items
+        db.session.commit()
+        
+        # Refresh the trip to include all itinerary items
         db.session.refresh(trip)
         
         # Return the created trip

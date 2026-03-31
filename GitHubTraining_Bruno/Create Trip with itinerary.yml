@@ -1,0 +1,54 @@
+info:
+  name: Create Trip with itinerary
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://127.0.0.1:5000/api/trips
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "destination": "London, Great Britain",
+        "start_date": "2026-06-01T00:00:00",
+        "end_date": "2026-06-05T00:00:00",
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "description": "Short trip to London",
+        "itinerary_items": [
+          {
+            "day": 1,
+            "title": "Arrival Day",
+            "description": "Arrive at airport and check in",
+            "activity_date": "2026-06-01T09:00:00",
+            "location": "London ",
+            "breakfast_time": "08:00:00",
+            "lunch_time": "12:00:00",
+            "dinner_time": "19:00:00",
+            "accommodation_name": "Tower Hotelx",
+            "accommodation_address": "London",
+            "activities": [
+              {
+                "name": "Airport Transfer",
+                "time": "14:00",
+                "duration_minutes": 60,
+                "location": "Airport",
+                "notes": "Book in advance"
+              }
+            ]
+          }
+          ]
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3NDk1NjAxNywianRpIjoiOGQyNjg1MGQtYmY2MS00M2YxLWI0YmMtNjdlMjIxZmY0N2YxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIiLCJuYmYiOjE3NzQ5NTYwMTcsImNzcmYiOiI1OTk3MDcyZi00NjI2LTRiNGUtOWFhYi0wODZlODZjNzdhMmQiLCJleHAiOjE3NzQ5NTk2MTcsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20ifQ.wAACMNYVZB6J8Ab5OcFSXbPwxqOQGYCvh1L-7hX7wEA
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

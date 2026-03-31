@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from database import db
 from jwt_utils import setup_jwt
 from auth_middleware import protected_route, optional_auth, get_current_user_id
+from config import config
 
 # Load environment variables from .env file
 load_dotenv()
@@ -12,18 +13,20 @@ load_dotenv()
 # Initialize Flask app
 app = Flask(__name__)
 
-# Configure Flask app
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'DATABASE_URL',
-    'sqlite:///planventure.db'
-)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JSON_SORT_KEYS'] = False
-app.config['ENV'] = os.getenv('FLASK_ENV', 'development')
-app.config['DEBUG'] = os.getenv('FLASK_DEBUG', True)
+# Load configuration based on environment
+app.config.from_object(config)
 
-# Initialize CORS
-CORS(app)
+# Configure CORS with settings from config
+CORS(
+    app,
+    origins=config.get_cors_origins(),
+    methods=config.CORS_METHODS,
+    allow_headers=config.CORS_ALLOW_HEADERS,
+    expose_headers=config.CORS_EXPOSE_HEADERS,
+    supports_credentials=config.CORS_SUPPORTS_CREDENTIALS,
+    max_age=config.CORS_MAX_AGE,
+    send_wildcard=config.CORS_SEND_WILDCARD
+)
 
 # Initialize SQLAlchemy with app
 db.init_app(app)
@@ -35,9 +38,10 @@ jwt = setup_jwt(app)
 from models import User, Trip, ItineraryItem
 
 # Import and register blueprints
-from routes import auth_bp, trips_bp
+from routes import auth_bp, trips_bp, itinerary_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(trips_bp)
+app.register_blueprint(itinerary_bp)
 
 @app.route('/')
 def home():

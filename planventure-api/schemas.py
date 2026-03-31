@@ -36,6 +36,12 @@ class ItineraryItemSchema(Schema):
     latitude = fields.Float(required=False, allow_none=True)
     longitude = fields.Float(required=False, allow_none=True)
     location = fields.String(required=False, validate=validate.Length(max=255))
+    breakfast_time = fields.Time(required=False, allow_none=True)
+    lunch_time = fields.Time(required=False, allow_none=True)
+    dinner_time = fields.Time(required=False, allow_none=True)
+    accommodation_name = fields.String(required=False, validate=validate.Length(max=255))
+    accommodation_address = fields.String(required=False)
+    activities = fields.List(fields.Dict, required=False)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
 
@@ -48,6 +54,7 @@ class TripCreateSchema(Schema):
     latitude = fields.Float(required=False, allow_none=True)
     longitude = fields.Float(required=False, allow_none=True)
     description = fields.String(required=False)
+    itinerary_items = fields.List(fields.Nested(ItineraryItemSchema), required=False)
 
 
 class TripSchema(Schema):
