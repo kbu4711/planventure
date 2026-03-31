@@ -1,6 +1,7 @@
 # This is the dependabot configuration file that automates dependency updates
 # Updates section configures how dependabot should handle dependency updates:
 # - Monitors pip dependencies in the planventure-api directory
+# - Monitors GitHub Actions workflow dependencies
 # - Checks for updates weekly
 #
 version: 2
@@ -12,3 +13,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
