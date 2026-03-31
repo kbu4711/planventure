@@ -1,17 +1,14 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from os import environ
 from dotenv import load_dotenv
 from datetime import timedelta
 from config import Config
+from db import db
 
 # Load environment variables
 load_dotenv()
-
-# Initialize SQLAlchemy
-db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
@@ -26,7 +23,7 @@ def create_app():
          }})
 
     # JWT Configuration
-    app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY', 'your-secret-key')
+    app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY', 'dev-secret-key-change-in-production-12345')
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
     jwt = JWTManager(app)
 

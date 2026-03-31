@@ -10,9 +10,12 @@ const getAuthHeaders = () => {
 
 const handleResponse = async (response) => {
   if (response.status === 401) {
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-    throw new Error('Session expired. Please login again.');
+    // Only redirect for non-auth endpoints during actual session validation
+    if (!response.url.includes('/auth/')) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+      throw new Error('Session expired. Please login again.');
+    }
   }
 
   if (response.status === 404) {
@@ -20,11 +23,12 @@ const handleResponse = async (response) => {
   }
 
   const data = await response.json();
+  console.log('API Response:', data, 'Status:', response.status); // Debug log
+  
   if (!response.ok) {
     throw new Error(data.error || data.message || 'Request failed');
   }
 
-  console.log('API Response:', data); // Debug log
   return data;
 };
 

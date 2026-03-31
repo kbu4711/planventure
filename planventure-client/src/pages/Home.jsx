@@ -12,15 +12,17 @@ const Home = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          py: 4,
+          py: { xs: 3, sm: 6, md: 8 },
+          px: { xs: 1, sm: 2 },
         }}
       >
         <img 
           src={planventureLogo} 
           alt="Planventure Logo"
           style={{
-            height: '200px',
-            marginBottom: '2rem'
+            height: 'clamp(120px, 25vw, 280px)',
+            width: 'auto',
+            marginBottom: 'clamp(1rem, 5vw, 2rem)'
           }}
         />
         <Typography 
@@ -29,7 +31,9 @@ const Home = () => {
           sx={{ 
             mb: 2, 
             textAlign: 'center',
-            color: 'secondary.main'
+            color: 'secondary.main',
+            fontSize: { xs: '1.75rem', sm: '2.125rem', md: '2.5rem' },
+            fontWeight: 700
           }}
         >
           Welcome to Planventure
@@ -37,9 +41,11 @@ const Home = () => {
         <Typography 
           variant="body1"
           sx={{ 
-            mb: 2, 
+            mb: { xs: 2, sm: 3 }, 
             textAlign: 'center',
-            color: 'secondary.light'
+            color: 'secondary.light',
+            fontSize: { xs: '0.9375rem', sm: '1rem' },
+            lineHeight: 1.6
           }}
         >
           Your next adventure begins here. Start planning unforgettable trips with our intuitive planning tools and make every journey memorable.
@@ -48,7 +54,11 @@ const Home = () => {
           variant="contained" 
           size="large"
           onClick={() => navigate('/login')}
-          sx={{ mt: 2 }}
+          sx={{ 
+            mt: { xs: 2, sm: 3 },
+            px: { xs: 3, sm: 4 },
+            py: { xs: 1, sm: 1.5 }
+          }}
         >
           Get Started
         </Button>

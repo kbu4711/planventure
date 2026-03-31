@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, current_app, make_response
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 from flask_cors import cross_origin
 from config import Config
-from app import db
+from db import db
 from models import Trip
 from middleware.auth import auth_middleware
 from datetime import datetime
@@ -73,6 +73,7 @@ def create_trip():
         
         trip = Trip(
             user_id=user_id,
+            title=data.get('title', 'Untitled Trip'),
             destination=data['destination'],
             start_date=start_date,
             end_date=end_date,
@@ -102,6 +103,7 @@ def get_trips():
     return jsonify({
         'trips': [{
             'id': trip.id,
+            'title': trip.title,
             'destination': trip.destination,
             'start_date': trip.start_date.isoformat(),
             'end_date': trip.end_date.isoformat(),
@@ -142,6 +144,7 @@ def get_trip(trip_id):
         
     return jsonify({
         'id': trip.id,
+        'title': trip.title,
         'destination': trip.destination,
         'start_date': trip.start_date.isoformat(),
         'end_date': trip.end_date.isoformat(),
@@ -160,6 +163,8 @@ def update_trip(trip_id):
     data = request.get_json()
     
     try:
+        if 'title' in data:
+            trip.title = data['title']
         if 'destination' in data:
             trip.destination = data['destination']
         if 'start_date' in data or 'end_date' in data:

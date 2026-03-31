@@ -69,7 +69,15 @@ const NewTripForm = () => {
   };
 
   return (
-    <Paper elevation={2} sx={{ p: 4, maxWidth: 600, mx: 'auto', mt: 4 }}>
+    <Paper elevation={0} sx={{ 
+      p: { xs: 2, sm: 3, md: 4 }, 
+      maxWidth: 600, 
+      mx: 'auto', 
+      mt: { xs: 2, sm: 4 },
+      mb: 4,
+      border: '1px solid',
+      borderColor: 'divider'
+    }}>
       <Box
         component="form"
         onSubmit={handleSubmit}

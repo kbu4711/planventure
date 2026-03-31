@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from flask_jwt_extended import create_access_token
-from app import db
+from db import db
 from utils.password import hash_password, check_password
 
 class User(db.Model):

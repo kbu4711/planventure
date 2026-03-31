@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app import db
+from db import db
 from models import User
 from utils.validators import validate_email
 
@@ -58,13 +58,18 @@ def login():
     # Verify user exists and password is correct
     if user and user.verify_password(data['password']):
         token = user.generate_auth_token()
-        return jsonify({
+        print(f"DEBUG: Generated token type: {type(token)}, token: {token[:20] if token else 'None'}...")
+        response_data = {
             'message': 'Login successful',
             'token': token,
             'user': {
                 'id': user.id,
                 'email': user.email
             }
-        }), 200
+        }
+        print(f"DEBUG: Response data: {response_data}")
+        return jsonify(response_data), 200
+    else:
+        print(f"DEBUG: Login failed - user: {user}, password_match: {user.verify_password(data['password']) if user else 'N/A'}")
     
     return jsonify(INVALID_CREDENTIALS)

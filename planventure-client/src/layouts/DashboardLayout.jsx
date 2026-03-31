@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/navigation/Navbar';
+import Footer from '../components/navigation/Footer';
 
 const DRAWER_WIDTH = 240;
 
@@ -93,22 +94,12 @@ const DashboardLayout = ({ children }) => {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Navbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={handleDrawerToggle}
-          sx={{ mr: 2, display: { sm: 'none' } }}
-        >
-          <MenuIcon />
-        </IconButton>
-      </Navbar>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Navbar />
       
       <Box
         component="nav"
-        sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
+        sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 }, mt: { xs: 7, sm: 8 } }}
       >
         {/* Mobile drawer */}
         <Drawer
@@ -121,8 +112,8 @@ const DashboardLayout = ({ children }) => {
             '& .MuiDrawer-paper': { 
               boxSizing: 'border-box', 
               width: DRAWER_WIDTH,
-              height: 'calc(100vh - 56px)', // Subtract footer height
-              marginTop: '64px' // Account for navbar
+              height: 'calc(100vh - 56px)',
+              marginTop: 0
             },
           }}
         >
@@ -137,10 +128,15 @@ const DashboardLayout = ({ children }) => {
             '& .MuiDrawer-paper': { 
               boxSizing: 'border-box', 
               width: DRAWER_WIDTH,
-              borderRight: '1px solid rgba(0, 0, 0, 0.12)',
-              marginTop: '64px', // Navbar height
-              height: 'calc(100vh - 78px - 58px)', // Subtract navbar (64px) and footer (56px) heights
-              overflowY: 'auto' // Add scrolling for overflow content
+              borderRight: '1px solid',
+              borderColor: 'divider',
+              marginTop: 0,
+              height: '100vh',
+              paddingTop: 2,
+              overflowY: 'auto',
+              position: 'fixed',
+              left: 0,
+              top: 64
             },
           }}
           open
@@ -153,13 +149,20 @@ const DashboardLayout = ({ children }) => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
-          marginTop: '64px'
+          p: { xs: 1, sm: 1.5, md: 2, lg: 2.5 },
+          width: { xs: '100%', sm: `calc(100% - ${DRAWER_WIDTH}px)` },
+          marginLeft: { xs: 0, sm: 0 },
+          marginTop: { xs: 7, sm: 0 },
+          paddingBottom: 15,
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: '100%',
+          overflow: 'hidden'
         }}
       >
         {children}
       </Box>
+      <Footer />
     </Box>
   );
 };

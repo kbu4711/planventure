@@ -1,13 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Grid, Paper, Button } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import TripList from '../components/trips/TripList';
-import { useAuth } from '../context/AuthContext';
 import travelingSvg from '../assets/undraw_traveling_yhxq.svg';
 
 const Dashboard = () => {
-  const { user } = useAuth();
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const WelcomeMessage = () => (
     <Box
@@ -87,24 +85,47 @@ const navigate = useNavigate();
   );
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, sm: 3 } }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        My Trips
-      </Typography>
-      <Paper
-        elevation={2}
+    <Box sx={{ width: '100%', p: 0, m: 0 }}>
+      <Box sx={{ mb: 3, px: { xs: 1, sm: 1.5, md: 2, lg: 2.5 }, pt: 2 }}>
+        <Typography 
+          variant="h4" 
+          component="h1" 
+          sx={{
+            fontWeight: 800,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            mb: 1,
+            fontSize: { xs: '1.75rem', sm: '2rem', md: '2.125rem' }
+          }}
+        >
+          My Trips
+        </Typography>
+        <Typography 
+          variant="body2" 
+          color="text.secondary"
+          sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+        >
+          Organize and plan your journeys
+        </Typography>
+      </Box>
+      <Box
         sx={{
-          p: 3,
           display: 'flex',
           flexDirection: 'column',
-          minHeight: '60vh'
+          minHeight: 'calc(100vh - 200px)',
+          backgroundColor: 'transparent',
+          borderRadius: 0,
+          border: 'none',
+          px: { xs: 1, sm: 1.5, md: 2, lg: 2.5 }
         }}
       >
         <TripList
           WelcomeMessage={WelcomeMessage}
           ErrorState={ErrorState}
         />
-      </Paper>
+      </Box>
     </Box>
   );
 };

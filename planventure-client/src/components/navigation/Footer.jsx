@@ -8,12 +8,9 @@ const Footer = () => {
         py: 3,
         px: 2,
         mt: 'auto',
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
         backgroundColor: (theme) => theme.palette.grey[100],
-        zIndex: 1000
+        borderTop: '1px solid',
+        borderColor: 'divider'
       }}
     >
       <Container maxWidth="lg">

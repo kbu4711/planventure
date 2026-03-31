@@ -6,6 +6,8 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import NewTripPage from '../pages/NewTripPage';
 import TripDetailsPage from '../pages/TripDetailsPage';
 import EditTripPage from '../pages/EditTripPage';
+import TripPlannerPage from '../pages/TripPlannerPage';
+import SettingsPage from '../pages/SettingsPage';
 
 export const publicRoutes = [
   {
@@ -42,5 +44,13 @@ export const protectedRoutes = [
   {
     path: '/trips/:tripId/edit',
     element: <DashboardLayout><EditTripPage /></DashboardLayout>,
+  },
+  {
+    path: '/planner',
+    element: <DashboardLayout><TripPlannerPage /></DashboardLayout>,
+  },
+  {
+    path: '/settings',
+    element: <DashboardLayout><SettingsPage /></DashboardLayout>,
   }
 ];
