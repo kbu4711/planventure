@@ -21,9 +21,14 @@ def validate_username(username: str) -> bool:
         
     Raises:
         TypeError: If username is None
+        AttributeError: If username is not a string
     """
     if username is None:
         raise TypeError("Username cannot be None")
+    
+    # Raise AttributeError for non-string types
+    if not isinstance(username, str):
+        raise AttributeError(f"Username must be a string, not {type(username).__name__}")
         
     # Check for empty string
     if not username:
@@ -34,12 +39,14 @@ def validate_username(username: str) -> bool:
         return False
         
     # Pattern explanation:
-    # ^            - Start of string
-    # [a-zA-Z_]    - First character must be letter or underscore
-    # (?!_)        - Negative lookahead to prevent multiple underscores at start
-    # [a-zA-Z0-9_] - Remaining characters can be letters, numbers, or underscores
-    # {2,15}       - Length of remaining characters (2-15, plus first character = 3-16 total)
-    # $            - End of string
-    pattern = r'^[a-zA-Z_](?!_)[a-zA-Z0-9_]{2,15}$'
+    # ^                                    - Start of string
+    # (                                    - Start of alternation
+    #   [a-zA-Z][a-zA-Z0-9_]{2,15}       - Starts with letter, followed by 2-15 chars (letters, numbers, underscores)
+    #   |                                  - OR
+    #   _[a-zA-Z0-9][a-zA-Z0-9_]{1,14}   - Starts with single underscore, then letter/number, then 1-14 chars
+    # )                                    - End of alternation
+    # $                                    - End of string
+    # Total length: letter (1) + 2-15 chars = 3-16, or underscore (1) + letter/number (1) + 1-14 chars = 3-16
+    pattern = r'^([a-zA-Z][a-zA-Z0-9_]{2,15}|_[a-zA-Z0-9][a-zA-Z0-9_]{1,14})$'
     
     return bool(re.match(pattern, username))

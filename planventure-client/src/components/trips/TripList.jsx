@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback } from 'react';
 import { 
   Grid, 
   Typography, 
@@ -11,40 +11,13 @@ import {
 import { Add as AddIcon } from '@mui/icons-material';
 import TripCard from './TripCard';
 import { useNavigate } from 'react-router-dom';
-import { tripService } from '../../services/tripService';
+import { useTrips } from '../../hooks/useTrips';
 
 const TripList = ({ WelcomeMessage, ErrorState }) => {
-  const [trips, setTrips] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { trips, loading, error, refetch } = useTrips();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  useEffect(() => {
-    const fetchTrips = async () => {
-      try {
-        setLoading(true);
-        const data = await tripService.getAllTrips();
-        console.log('TripList received data:', data); // Debug log
-        
-        if (!data || !data.trips) {
-          console.error('Invalid data format:', data);
-          setError('Unexpected data format received');
-          return;
-        }
-        
-        setTrips(data.trips);
-      } catch (err) {
-        console.error('TripList error:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTrips();
-  }, []);
 
   // Loading state with skeleton cards
   if (loading) {
@@ -69,20 +42,6 @@ const TripList = ({ WelcomeMessage, ErrorState }) => {
     return <WelcomeMessage />;
   }
 
-  // Sort trips - upcoming first, then by reverse date
-  const sortedTrips = [...trips].sort((a, b) => {
-    const aStart = new Date(a.start_date);
-    const bStart = new Date(b.start_date);
-    const now = new Date();
-    const aIsUpcoming = aStart > now;
-    const bIsUpcoming = bStart > now;
-    
-    if (aIsUpcoming !== bIsUpcoming) {
-      return aIsUpcoming ? -1 : 1;
-    }
-    return aStart - bStart;
-  });
-
   // Loaded state with trips
   return (
     <Box sx={{ animation: 'fadeIn 0.4s ease-in', width: '100%' }}>
@@ -96,7 +55,7 @@ const TripList = ({ WelcomeMessage, ErrorState }) => {
           }
         }}
       >
-        {sortedTrips.map((trip, index) => (
+        {trips.map((trip, index) => (
           <Grid 
             item 
             xs={12} 
@@ -122,7 +81,7 @@ const TripList = ({ WelcomeMessage, ErrorState }) => {
           md={6}
           lg={4}
           sx={{
-            animation: `slideIn 0.5s ease-out ${sortedTrips.length * 0.1}s both`,
+            animation: `slideIn 0.5s ease-out ${trips.length * 0.1}s both`,
             '@keyframes slideIn': {
               '0%': { opacity: 0, transform: 'translateY(20px)' },
               '100%': { opacity: 1, transform: 'translateY(0)' }
