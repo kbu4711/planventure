@@ -1,0 +1,20 @@
+info:
+  name: CrGet Trip by Id
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://127.0.0.1:5000/api/trips/7
+  body:
+    type: json
+    data: ""
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3NDg4OTYyMywianRpIjoiMTFjODliMTYtODhhZC00NzQ1LWFkM2YtOTI0Yjc4ZWM4NTU5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NzQ4ODk2MjMsImNzcmYiOiJiZjQ2NDY4NS01YWIwLTQ1OWYtYTgxNS04ZTUwYjdhMTg4ZDYiLCJleHAiOjE3NzQ4OTMyMjMsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20ifQ.wYhQwHp6mvIIk7TI1DZ1a9hAjiyU0F6IGdF1_onATR0
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

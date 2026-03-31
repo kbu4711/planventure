@@ -1,0 +1,31 @@
+info:
+  name: Create Trip
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://127.0.0.1:5000/api/trips
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "destination": "Paris, France",
+        "start_date": "2026-06-01T00:00:00",
+        "end_date": "2026-06-15T00:00:00",
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "description": "Summer vacation in Paris"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3NDg4ODUyMCwianRpIjoiMGYwNGU2NmItN2QwZC00NzNiLWIzYzQtMmM1NzE0OGY1ZjU5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NzQ4ODg1MjAsImNzcmYiOiI1NjI4YmQzZC03ZjYzLTQ1NGItODg3OC01ODY3OTAzNmNhYzMiLCJleHAiOjE3NzQ4OTIxMjAsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20ifQ.NK6iq8XN1kvyEGK5JOMO23fhVJ7i1E8mi8k3bEPOSuE
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,25 @@
+info:
+  name: Authentication
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://127.0.0.1:5000/api/auth/login
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "email": "testuser@example.com",
+        "password": "SecurePass123!"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
